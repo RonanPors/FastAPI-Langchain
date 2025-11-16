@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from schemas.enums import ModelName
 from schemas.pydantic.items import ItemCreate
 
 app = FastAPI()
@@ -17,18 +18,68 @@ async def root() -> dict[str, str]:
     return {"message": "Hello, Ronan!"}
 
 
-# Déclarer un endpoint avec un param dans le path
+# ============================================
+#        ENDPOINTS AVEC PARAMÈTRES PATH
+# ============================================
+
+
+# Params standard sans type
 @app.get(
     "/items/{item_id}",
     summary="Obtenir un élément",
     description="Endpoint pour obtenir un élément par son ID.",
     responses={200: {"description": "Succès"}, 404: {"description": "Élément non trouvé"}},
 )
-async def read_item(item_id: int) -> dict[str, int]:
+async def get_item(item_id) -> dict[str, str]:
     """Retrieve an item by its ID."""
 
     item = {"item_id": item_id}
     return item
+
+
+# Params avec type
+@app.get(
+    "/items2/{item_id}",
+    summary="Obtenir un élément avec type d'élément",
+    description="Endpoint pour obtenir un élément par son ID.",
+    responses={200: {"description": "Succès"}, 404: {"description": "Élément non trouvé"}},
+)
+async def get_item_with_type(item_id: int) -> dict[str, int]:
+    """Retrieve an item by its ID."""
+
+    item = {"item_id": item_id}
+    return item
+
+
+# Params avec valeurs prédéfinies
+## Utiliser Enum pour définir des valeurs prédéfinies
+@app.get(
+    "/models/{model_name}",
+    summary="Obtenir un modèle prédéfini",
+    description="Endpoint pour obtenir un modèle par son nom.",
+    responses={200: {"description": "Succès"}, 404: {"description": "Modèle non trouvé"}},
+)
+async def get_model(model_name: ModelName) -> dict[str, str]:
+    """Retrieve a predefined model by its name."""
+
+    if model_name == ModelName.model_a:
+        model = {"model_name": model_name, "description": "Ceci est le modèle A"}
+    elif model_name == ModelName.model_b:
+        model = {"model_name": model_name, "description": "Ceci est le modèle B"}
+    else:
+        model = {"model_name": model_name, "description": "Ceci est le modèle C"}
+    return model
+
+
+# Params avec valeur path (url)
+@app.get("/files/{file_path:path}")
+async def read_file(file_path: str) -> dict[str, str]:
+    return {"file_path": file_path}
+
+
+# ============================================
+#        ENDPOINTS AVEC PARAMÈTRES QUERY
+# ============================================
 
 
 # Déclarer un endpoint avec un query param
@@ -46,6 +97,11 @@ async def read_items(skip: int = 0, limit: int | None = None) -> dict[str, int |
     if limit is not None:
         response["limit"] = limit
     return response
+
+
+# ============================================
+#        ENDPOINTS AVEC BODY PAYLOAD
+# ============================================
 
 
 # Déclarer un endpoint avec un body payload
