@@ -72,7 +72,12 @@ async def get_model(model_name: ModelName) -> dict[str, str]:
 
 
 # Params avec valeur path (url)
-@app.get("/files/{file_path:path}")
+@app.get(
+    "/files/{file_path:path}",
+    summary="Obtenir un fichier par son chemin",
+    description="Endpoint pour obtenir un fichier en spécifiant son chemin complet.",
+    responses={200: {"description": "Succès"}, 404: {"description": "Fichier non trouvé"}},
+)
 async def read_file(file_path: str) -> dict[str, str]:
     return {"file_path": file_path}
 
@@ -80,6 +85,8 @@ async def read_file(file_path: str) -> dict[str, str]:
 # ============================================
 #        ENDPOINTS AVEC PARAMÈTRES QUERY
 # ============================================
+
+# TODO: Continuer les endpoints avec query params
 
 
 # Déclarer un endpoint avec un query param

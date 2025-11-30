@@ -1,0 +1,56 @@
+@localhost = http://127.0.0.1:8000
+@item_id = 42
+@item_id_string = toto
+@model_name = model_a
+@file_path = documents/report.pdf
+
+// ============================================
+// HOME TESTS FOR REST API
+// ============================================
+
+### Test GET / (home)
+GET {{localhost}}/
+
+// ============================================
+// TESTS FOR PATH PARAMS
+// ============================================
+
+### Test GET /items/{item_id} without type (accepts any value)
+GET {{localhost}}/items/{{item_id_string}}
+
+### Test GET /items2/{item_id} with type int (must be integer)
+GET {{localhost}}/items2/{{item_id}}
+
+### Test GET /models/{model_name} with enum values (model_a, model_b, model_c)
+GET {{localhost}}/models/{{model_name}}
+
+### Test GET /files/{file_path:path} with file path
+GET {{localhost}}/files/{{file_path}}
+
+// ============================================
+// TESTS FOR QUERY PARAMS
+// ============================================
+
+### Test GET /search/ with default params
+GET {{localhost}}/search/
+
+### Test GET /search/ with skip and limit params
+GET {{localhost}}/search/?skip=0&limit=10
+
+### Test GET /search/ with only skip param
+GET {{localhost}}/search/?skip=5
+
+// ============================================
+// TESTS FOR BODY PAYLOAD (POST)
+// ============================================
+
+### Test POST /items/ with JSON body and pydantic model
+POST {{localhost}}/items/
+Content-Type: application/json
+
+{
+  "name": "Mon premier item",
+  "description": "Ceci est une description" // optional with default value None = None from pydantic class
+}
+
+
