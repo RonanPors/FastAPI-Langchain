@@ -86,12 +86,10 @@ async def read_file(file_path: str) -> dict[str, str]:
 #        ENDPOINTS AVEC PARAMÈTRES QUERY
 # ============================================
 
-# TODO: Continuer les endpoints avec query params
-
 
 # Déclarer un endpoint avec un query param
 @app.get(
-    "/search/",
+    "/search",
     summary="Rechercher des éléments",
     description="Endpoint pour rechercher des éléments avec pagination.",
     responses={200: {"description": "Succès"}, 400: {"description": "Requête invalide"}},
@@ -113,7 +111,7 @@ async def read_items(skip: int = 0, limit: int | None = None) -> dict[str, int |
 
 # Déclarer un endpoint avec un body payload
 @app.post(
-    "/items/",
+    "/payload",
     summary="Créer un élément",
     description="Endpoint pour créer un nouvel élément.",
     responses={201: {"description": "Élément créé"}, 400: {"description": "Requête invalide"}},
@@ -124,3 +122,39 @@ async def create_item(payload: ItemCreate) -> dict[str, str | None]:
 
     # Utiliser la méthode model_dump() pour convertir le modèle en dictionnaire
     return payload.model_dump()
+
+
+# Déclarer un endpoint avec un body payload et des path params
+@app.post(
+    "/payload/{item_id}",
+    summary="Créer un élément avec ID",
+    description="Endpoint pour créer un nouvel élément avec un ID spécifié.",
+    responses={201: {"description": "Élément créé"}, 400: {"description": "Requête invalide"}},
+)
+async def create_item_with_id(item_id: int, payload: ItemCreate) -> dict[str, str | int | None]:
+    """Create a new item with a specified ID from the request body payload."""
+
+    # on peut aussi utiliser l'opérateur de merge :
+    # response = payload.model_dump()
+    # response |= {"item_id": item_id}
+    # return response
+
+    return {**payload.model_dump(), "item_id": item_id}
+
+
+# Déclarer un endpoint avec un body, path et query params
+@app.post(
+    "/payload/{item_id}/query",
+    summary="Créer un élément avec ID et détails",
+    description="Endpoint pour créer un nouvel élément avec un ID spécifié et des détails supp.",
+    responses={201: {"description": "Élément créé"}, 400: {"description": "Requête invalide"}},
+)
+async def create_item_with_id_and_query(
+    item_id: int, payload: ItemCreate, q: str | None = None
+) -> dict[str, str | int | None]:
+    """Create a new item with a specified ID and optional query parameter from the request body payload."""
+
+    response = {**payload.model_dump(), "item_id": item_id}
+    if q:
+        response["q"] = q
+    return response

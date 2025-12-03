@@ -32,7 +32,7 @@ GET {{localhost}}/files/{{file_path}}
 // ============================================
 
 ### Test GET /search/ with default params
-GET {{localhost}}/search/
+GET {{localhost}}/search
 
 ### Test GET /search/ with skip and limit params
 GET {{localhost}}/search/?skip=0&limit=10
@@ -44,13 +44,29 @@ GET {{localhost}}/search/?skip=5
 // TESTS FOR BODY PAYLOAD (POST)
 // ============================================
 
-### Test POST /items/ with JSON body and pydantic model
-POST {{localhost}}/items/
+### Test POST /payload with JSON body and pydantic model
+POST {{localhost}}/payload
 Content-Type: application/json
 
 {
   "name": "Mon premier item",
-  "description": "Ceci est une description" // optional with default value None = None from pydantic class
+  "description": "Ceci est une description"
 }
 
+### Test POST /payload/{item_id}/ with JSON body and pydantic model
+POST {{localhost}}/payload/{{item_id}}
+Content-Type: application/json
 
+{
+  "name": "Mon premier item",
+  "description": "Ceci est une description"
+}
+
+### Test POST /payload/{item_id}/query with JSON body, path param and query param
+POST {{localhost}}/payload/{{item_id}}/query?q=ma_recherche
+Content-Type: application/json 
+
+{
+  "name": "Mon premier item",
+  "description": "Ceci est une description"
+}
