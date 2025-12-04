@@ -152,7 +152,7 @@ async def create_item_with_id(item_id: int, payload: ItemCreate) -> dict[str, st
 async def create_item_with_id_and_query(
     item_id: int, payload: ItemCreate, q: str | None = None
 ) -> dict[str, str | int | None]:
-    """Create a new item with a specified ID and optional query parameter from the request body payload."""
+    """Create a new item with a specified ID and optional query parameter from the body payload."""
 
     response = {**payload.model_dump(), "item_id": item_id}
     if q:
